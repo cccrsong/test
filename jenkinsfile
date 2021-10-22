@@ -42,14 +42,7 @@ pipeline {
                 bat "mvn checkstyle:checkstyle"
             }
         }
-        
-        stage('Publish Static Code Analysis Reports')
-        {
-            steps {
-                checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: '', unHealthy: ''
-            }
-        }
-	    
+         
 	    stage('Push image') {
               steps {
                   script {
