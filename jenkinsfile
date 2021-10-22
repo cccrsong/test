@@ -46,11 +46,7 @@ pipeline {
         stage('Publish Static Code Analysis Reports')
         {
             steps {
-                checkstyle canComputeNew:false,
-		defaultEncoding:",
-		healthy:",
-		pattern: 'reports/checkstyle/checkstyle.xml',
-		unHealthy:"
+                checkstyle canComputeNew: false, defaultEncoding: '', healthy: '', pattern: 'reports/checkstyle/checkstyle.xml', unHealthy: ''
             }
         }
 	    
