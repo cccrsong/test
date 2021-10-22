@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+        tools{
+	    maven 'Maven'
+	}
+	
+	stages {
+	    stage('Git Progress') {
+                steps {
+                    git  branch: 'main', credentialsId: 'github-test-jenkins', url: 'https://github.com/cccrsong/test.git'
+                }
+            }
+	
+	    //stage('Build') { 
+                //steps {
+                    //withMaven(maven: 'Maven') {
+		    //sh "mvn cleam install"
+		    //sh "mvn clean verify"
+		    //}
+                //}
+            //}
+	    
+	    stage('Build') { 
+                steps {
+                    sh 'mvn -B -DskipTests clean package' 
+                }
+            }	    
+	
+            stage('Test') {
+                steps {
+                    sh 'mvn test'
+                }
+                post {
+                    always {
+                        junit 'target/surefire-reports/*.xml'
+                    }
+                }
+            }
+	    
+	    stage('Push image') {
+            steps {
+                script {
+                    checkout scm
+                    docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_cred') {
+                        def customImage = docker.build("shoutsc/test")
+                        customImage.push("latest")
+                        }
+                    }
+                }
+            }
