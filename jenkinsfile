@@ -36,8 +36,21 @@ pipeline {
                     }
                 }
             }
+
+        stage('Static Code Analysis') {
+            steps {
+                bat "mvn checkstyle:checkstyle"
+            }
+        }
+        
+        stage('Publish Static Code Analysis Reports')
+        {
+            steps {
+                checkstyle canComputeNew: false, defaultEncoding: ", healthy":",pattern: 'reports/checkstyle/checkstyle.xml',unHealthy:"
+            }
+        }
 	    
-	  stage('Push image') {
+	    stage('Push image') {
               steps {
                   script {
                       checkout scm
